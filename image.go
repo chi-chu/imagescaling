@@ -37,6 +37,9 @@ func New(in io.Reader)(*Image, error) {
 }
 
 func (m *Image) calcClip(s *Mode)(int, int, int, int){
+    if m.err != nil {
+        return 0, 0, 0, 0
+    }
     if s == nil {
         if setedclip == false {
             m.err = ERRNILCLIPMODE
@@ -67,15 +70,15 @@ func (m *Image) calcClip(s *Mode)(int, int, int, int){
             return 0, 0, 0, 0
         }
         if m.opImage != nil {
-            if s.Coordinate[2] >= uint(m.opImage.Bounds().Max.X) ||
-                s.Coordinate[3] >= uint(m.opImage.Bounds().Max.Y) {
+            if s.Coordinate[2] > uint(m.opImage.Bounds().Max.X) ||
+                s.Coordinate[3] > uint(m.opImage.Bounds().Max.Y) {
                 m.err = ERRCUSTOMCLIPPARA
                 return 0, 0, 0, 0
             }
             return int(s.Coordinate[0]), int(s.Coordinate[1]), int(s.Coordinate[2]), int(s.Coordinate[3])
         }
-        if s.Coordinate[2] >= uint(m.image.Bounds().Max.X) ||
-            s.Coordinate[3] >= uint(m.image.Bounds().Max.Y) {
+        if s.Coordinate[2] > uint(m.image.Bounds().Max.X) ||
+            s.Coordinate[3] > uint(m.image.Bounds().Max.Y) {
             m.err = ERRCUSTOMCLIPPARA
             return 0, 0, 0, 0
         }
@@ -87,6 +90,9 @@ func (m *Image) calcClip(s *Mode)(int, int, int, int){
 }
 
 func (m *Image) calcScale(s *Mode)(uint, uint) {
+    if m.err != nil {
+        return 0, 0
+    }
     if s == nil {
         if setedscale == false {
             m.err = ERRNILSCALEMODE
@@ -104,20 +110,30 @@ func (m *Image) calcScale(s *Mode)(uint, uint) {
             return uint(float64(m.opImage.Bounds().Max.Y)*s.Proportion), uint(float64(m.opImage.Bounds().Max.X)*s.Proportion)
         }
         return uint(float64(m.image.Bounds().Max.Y)*s.Proportion), uint(float64(m.image.Bounds().Max.X)*s.Proportion)
-    case CustomMode:
-        if s.CustomHeight == 0 && s.CustomWidth == 0 {
-            m.err = ERRCUSTOMSCALE
+    case FixLengthMode:
+        if s.FixHeight == 0 && s.FixWidth == 0 {
+            m.err = ERRFIXLENGTHSCALE
             return 0,0
         }
-        if s.CustomHeight == 0 && s.CustomWidth != 0 {
-            ratio := s.CustomWidth/uint(m.opImage.Bounds().Max.X)
-            return uint(s.CustomHeight*ratio), s.CustomWidth
+        if m.opImage != nil {
+            if s.FixHeight == 0 && s.FixWidth != 0 {
+                ratio := s.FixWidth/uint(m.opImage.Bounds().Max.X)
+                return uint(s.FixHeight*ratio), s.FixWidth
+            }
+            if s.FixHeight != 0 && s.FixWidth == 0 {
+                ratio := s.FixHeight/uint(m.opImage.Bounds().Max.Y)
+                return s.FixHeight, uint(s.FixHeight*ratio)
+            }
         }
-        if s.CustomHeight != 0 && s.CustomWidth == 0 {
-            ratio := s.CustomHeight/uint(m.opImage.Bounds().Max.Y)
-            return s.CustomHeight, uint(s.CustomHeight*ratio)
+        if s.FixHeight == 0 && s.FixWidth != 0 {
+            ratio := s.FixWidth/uint(m.image.Bounds().Max.X)
+            return uint(s.FixHeight*ratio), s.FixWidth
         }
-        return s.CustomHeight, s.CustomWidth
+        if s.FixHeight != 0 && s.FixWidth == 0 {
+            ratio := s.FixHeight/uint(m.image.Bounds().Max.Y)
+            return s.FixHeight, uint(s.FixHeight*ratio)
+        }
+        return s.FixHeight, s.FixWidth
     }
     m.err = ERRSCALE
     return 0,0
@@ -136,8 +152,8 @@ func (m *Image) GetHeightWidth() (int, int) {
     return m.image.Bounds().Max.Y, m.image.Bounds().Max.X
 }
 
-func (m *Image) Clip(s Mode) *Image {
-    x0, y0, x1, y1 := m.calcClip(&s)
+func (m *Image) Clip(s *Mode) *Image {
+    x0, y0, x1, y1 := m.calcClip(s)
     if m.err != nil {
         return m
     }
@@ -179,15 +195,15 @@ func (m *Image) Clip(s Mode) *Image {
     return m
 }
 
-func (m *Image) Scale(s Mode) *Image {
-    h, w := m.calcScale(&s)
+func (m *Image) Scale(s *Mode) *Image {
+    h, w := m.calcScale(s)
     if m.err != nil {
         return m
     }
     if m.opImage == nil {
-        m.opImage = resize.Thumbnail(w, h, m.image, resize.Lanczos3)
+        m.opImage = resize.Resize(w, h, m.image, resize.Lanczos3)
     }else{
-        m.opImage = resize.Thumbnail(w, h, m.opImage, resize.Lanczos3)
+        m.opImage = resize.Resize(w, h, m.opImage, resize.Lanczos3)
     }
     return m
 }

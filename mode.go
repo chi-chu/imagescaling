@@ -3,15 +3,16 @@ package imagescaling
 type MODE int
 
 const (
-    CenterMode      MODE = 0
-    ProportionMode  MODE = 1
-    CustomMode      MODE = 2
+    CenterMode      MODE = 1
+    ProportionMode  MODE = 2
+    FixLengthMode   MODE = 3
+    CustomMode      MODE = 4
 )
 
 type Mode struct {
     Mode            MODE
-    CustomHeight    uint
-    CustomWidth     uint
+    FixHeight       uint
+    FixWidth        uint
     Proportion      float64
     Coordinate      [4]uint
 }
@@ -20,13 +21,12 @@ var globalClipMode Mode
 var setedclip bool
 var globalScaleMode Mode
 var setedscale bool
-func SetGlobalClipMode(s Mode) error{
+func SetGlobalClipMode(s Mode){
     globalClipMode = s
     setedclip = true
-
 }
 
-func SetGlobalScaleMode(s Mode) error{
+func SetGlobalScaleMode(s Mode){
     globalScaleMode = s
     setedscale = true
 }

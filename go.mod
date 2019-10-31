@@ -1,4 +1,4 @@
-module github.com/chi-chu/thumbnail
+module github.com/chi-chu/imagescaling
 
 replace (
 	golang.org/x/image => github.com/golang/image e7c1f5e7dbb87d8921928a6d9fc52fb31ce73b24
