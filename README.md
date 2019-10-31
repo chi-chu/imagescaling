@@ -8,17 +8,20 @@ go get github/chi-chu/imagescaling
 ```
 #### 2.Mode Explain
 * Clip()  &emsp;Api example:  
-&emsp;&emsp;CenterMode:			Mode{Mode:CenterMode}  
-&emsp;&emsp;![Image text](https://raw.githubusercontent.com/chi-chu/imagescaling/master/img/CenterMode.jpg)  
-&emsp;&emsp;CustomMode:    		Mode{Mode:CustomMode, Coordinate: [4]uint{&ensp;X0,&ensp;Y0,&ensp;X1,&ensp;Y1&ensp;}}  
-&emsp;&emsp;![Image text](https://raw.githubusercontent.com/chi-chu/imagescaling/master/img/CustomMode.jpg)  
+	&emsp;&emsp;CenterMode:			Mode{Mode:CenterMode}  
+	&emsp;&emsp;![Image text](img/CenterMode.jpg)  
+	
+	&emsp;&emsp;CustomMode:    		Mode{Mode:CustomMode, Coordinate: [4]uint{&ensp;X0,&ensp;Y0,&ensp;X1,&ensp;Y1&ensp;}}  
+	&emsp;&emsp;![Image text](img/CustomMode.jpg)  
+
 * Scale() &emsp; Api example:  
 	&emsp;&emsp;ProportionMode:		Mode{Mode:ProportionMode, Proportion: 0.5}	&emsp;&emsp;&emsp;&emsp;**(half size)**  
-	&emsp;&emsp;![Image text](https://raw.githubusercontent.com/chi-chu/imagescaling/master/img/ProportionMode.jpg)  
+	&emsp;&emsp;![Image text](img/ProportionMode.jpg)  
+	
 	&emsp;&emsp;FixLengthMode:		Mode{Mode:FixLengthMode, FixHeight:80} 	&emsp;&emsp;&emsp;&emsp;&emsp;**(auto fix width)**  
 	&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;                 or Mode{Mode:FixLengthMode, FixWidth:100}		&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;**(auto fix height)**  
 	&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  				 or Mode{Mode:FixLengthMode, FixHeight:123, FixWidth:456}  &emsp;&emsp;**(stretch 拉伸)**  
-&emsp;&emsp;![Image text](https://raw.githubusercontent.com/chi-chu/imagescaling/master/img/FixLengthMode.jpg)  
+	&emsp;&emsp;![Image text](img/FixLengthMode.jpg)  
 
 
 #### 3.Usage
