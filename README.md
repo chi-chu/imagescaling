@@ -2,19 +2,19 @@
 	imagescaling is a go lib for clip or scaling image. support for jpg/png/bmp/gif 【chaining operations】
 	
 	imagescaling 是一个go图片 裁剪&缩放 库。 支持 jpg/png/bmp/gif 格式， 【链式操作】
-#### 1.get
+### 1.get
 ```bash
 go get github/chi-chu/imagescaling
 ```
-#### 2.Mode Explain
-* Clip()  &emsp;Api example:  
+### 2.Mode Explain
+* **Clip()**  &emsp;Api example:  
 	&emsp;&emsp;CenterMode:			Mode{Mode:CenterMode}  
 	&emsp;&emsp;![Image text](img/CenterMode.jpg)  
 	
 	&emsp;&emsp;CustomMode:    		Mode{Mode:CustomMode, Coordinate: [4]uint{&ensp;X0,&ensp;Y0,&ensp;X1,&ensp;Y1&ensp;}}  
 	&emsp;&emsp;![Image text](img/CustomMode.jpg)  
 
-* Scale() &emsp; Api example:  
+* **Scale()** &emsp; Api example:  
 	&emsp;&emsp;ProportionMode:		Mode{Mode:ProportionMode, Proportion: 0.5}	&emsp;&emsp;&emsp;&emsp;**(half size)**  
 	&emsp;&emsp;![Image text](img/ProportionMode.jpg)  
 	
@@ -23,8 +23,11 @@ go get github/chi-chu/imagescaling
 	&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  				 or Mode{Mode:FixLengthMode, FixHeight:123, FixWidth:456}  &emsp;&emsp;**(stretch 拉伸)**  
 	&emsp;&emsp;![Image text](img/FixLengthMode.jpg)  
 
-
-#### 3.Usage
+* **ReSet()**  &emsp; Api Desc:  
+	&emsp;&emsp;Recover the image to origin data
+* **GetExt()** &emsp; Api Desc:  
+	&emsp;&emsp;Get the file type **jpg/png/bmp/gif**
+### 3.Usage
 ```golang
 import github/chi-chu/imagescaling
 
@@ -47,6 +50,9 @@ func main(){
         panic(err)
     }
     defer fd.Close()
+    //you can use new mode to cover the global mode like this.
+    //img.Clip(&imagescaling.Mode{}).Scale(&imagescaling.Mode{}).Draw(fd)
+    
     err = img.Clip(nil).Scale(nil).Draw(fd)
     if err != nil {
         panic(err)
