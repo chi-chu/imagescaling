@@ -235,5 +235,6 @@ func (m *Image) Draw(out io.Writer) error {
 
 func (m *Image) ReSet() *Image {
     m.opImage = nil
+    m.err = nil
     return m
 }
