@@ -14,11 +14,11 @@ go get github/chi-chu/imagescaling
 	&emsp;&emsp;![Image text](img/CustomMode.jpg)  
 
 * **ProportionScale(p float64)** &emsp; Api example:  
-	when p=0.5
+	when p=0.5  
 	&emsp;&emsp;![Image text](img/ProportionMode.jpg)  
 	
 * **FixScale(height, width uint)** &emsp; Api example:  
-	when width=0  height=80
+	when width=0  height=80  
 	&emsp;&emsp;![Image text](img/FixLengthMode.jpg)  
 
 * **ReSet()**  &emsp; Api Desc:  
