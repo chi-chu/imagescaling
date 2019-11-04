@@ -7,20 +7,18 @@
 go get github/chi-chu/imagescaling
 ```
 ### 2.Mode Explain
-* **Clip(Mode)**  &emsp;Api example:  
-	&emsp;&emsp;**CenterMode**:			&emsp;&emsp;Mode{Mode:CenterMode}  
+* **CenterClip()**  &emsp;Api example:  
 	&emsp;&emsp;![Image text](img/CenterMode.jpg)  
 	
-	&emsp;&emsp;**CustomMode**:    		&emsp;&emsp;Mode{Mode:CustomMode, Coordinate: [4]uint{&ensp;X0,&ensp;Y0,&ensp;X1,&ensp;Y1&ensp;}}  
+* **CustomClip(x0, y0, x1, y1 uint)**  &emsp;Api example:  
 	&emsp;&emsp;![Image text](img/CustomMode.jpg)  
 
-* **Scale(Mode)** &emsp; Api example:  
-	&emsp;&emsp;**ProportionMode**:		&emsp;&emsp;Mode{Mode:ProportionMode, Proportion: 0.5}	&emsp;&emsp;&emsp;&emsp;**(half size)**  
+* **ProportionScale(p float64)** &emsp; Api example:  
+	when p=0.5
 	&emsp;&emsp;![Image text](img/ProportionMode.jpg)  
 	
-	&emsp;&emsp;**FixLengthMode**:		&emsp;&emsp;Mode{Mode:FixLengthMode, FixHeight:80} 	&emsp;&emsp;&emsp;&emsp;&emsp;**(auto fix width)**  
-	&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;                 or Mode{Mode:FixLengthMode, FixWidth:100}		&ensp;&emsp;&emsp;&emsp;&emsp;&emsp;**(auto fix height)**  
-	&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  				 or Mode{Mode:FixLengthMode, FixHeight:123, FixWidth:456}  &emsp;&emsp;**(stretch 拉伸)**  
+* **FixScale(height, width uint)** &emsp; Api example:  
+	when width=0  height=80
 	&emsp;&emsp;![Image text](img/FixLengthMode.jpg)  
 
 * **ReSet()**  &emsp; Api Desc:  
@@ -37,25 +35,19 @@ func main(){
         panic(err)
     }
     defer imageData.Close()
-    // here set the global opreation mode
-    imagescaling.SetGlobalClipMode(imagescaling.Mode{Mode:imagescaling.CustomMode, Coordinate: [4]uint{0,0,123,300}})
-    imagescaling.SetGlobalScaleMode(imagescaling.Mode{Mode:imagescaling.FixLengthMode, FixHeight:500})
     img, err := imagescaling.New(imageData)
     if err != nil {
         panic(err)
     }
     outPutPath := "/your/output/image/path/filename."+ img.GetExt()
     fd, err := os.OpenFile(outPutPath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
-    if err != nil {
-        panic(err)
-    }
-    defer fd.Close()
-    //you can use new mode to cover the global mode like this.
-    //img.Clip(&imagescaling.Mode{}).Scale(&imagescaling.Mode{}).Draw(fd)
-    
-    err = img.Clip(nil).Scale(nil).Draw(fd)
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
+	defer fd.Close()
+	err = img.CustomClip(100,23,400, 300).FixScale(100,0).Draw(fd)
+	if err != nil {
+		panic(err)
+	}
 }
 ```
