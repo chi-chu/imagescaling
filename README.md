@@ -1,7 +1,7 @@
 # imagescaling
 	imagescaling is a go lib for clip or scaling image. support for jpg/png/bmp/gif 【chaining operations】
 	
-	imagescaling 是一个go图片 裁剪&缩放 库。 支持 jpg/png/bmp/gif 格式， 【链式操作】
+	imagescaling 是一个go图片 裁剪&缩放&旋转 库。 支持 jpg/png/bmp/gif 格式， 【链式操作】
 ### 1.get
 ```bash
 go get github/chi-chu/imagescaling
@@ -21,6 +21,11 @@ go get github/chi-chu/imagescaling
 	when width=0  height=80  
 	&emsp;&emsp;![Image text](img/FixLengthMode.jpg)  
 
+* **Rotate(RotateMode)** &emsp; Api example:  
+	&emsp;&emsp;**clockwise**
+	&emsp;&emsp;only support 90/180/270 degrees  
+	&emsp;&emsp;Rotate90Degrees  Rotate180Degrees  Rotate270Degrees
+	
 * **ReSet()**  &emsp; Api Desc:  
 	&emsp;&emsp;Recover the image to original data
 * **GetExt()** &emsp; Api Desc:  
@@ -30,7 +35,7 @@ go get github/chi-chu/imagescaling
 import github/chi-chu/imagescaling
 
 func main(){
-	imageData, err := os.Open("/your/image/path/filename.jpg")
+    imageData, err := os.Open("/your/image/path/filename.jpg")
     if err != nil {
         panic(err)
     }
@@ -41,13 +46,13 @@ func main(){
     }
     outPutPath := "/your/output/image/path/filename."+ img.GetExt()
     fd, err := os.OpenFile(outPutPath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
-	if err != nil {
-		panic(err)
-	}
-	defer fd.Close()
-	err = img.CustomClip(100,23,400, 300).FixScale(100,0).Draw(fd)
-	if err != nil {
-		panic(err)
-	}
+    if err != nil {
+        panic(err)
+    }
+    defer fd.Close()
+    err = img.CustomClip(100, 23, 400, 300).FixScale(100, 0).Rotate(imagescaling.Rotate90Degrees).Draw(fd)
+    if err != nil {
+        panic(err)
+    }
 }
 ```

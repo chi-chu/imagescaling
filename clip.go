@@ -1,6 +1,8 @@
 package imagescaling
 
-import "image"
+import (
+    "image"
+)
 
 func (m *Image) clip(x0, y0, x1, y1 int) {
     switch m.ext {
@@ -44,23 +46,16 @@ func (m *Image) CenterClip() *Image {
     if m.err != nil {
         return m
     }
-    if m.opImage != nil {
-        halfWidth := int(m.opImage.Bounds().Max.X/2)
-        halfHeight := int(m.opImage.Bounds().Max.Y/2)
-        if m.opImage.Bounds().Max.Y > m.opImage.Bounds().Max.X {
-            m.clip(0,halfHeight-halfWidth, m.opImage.Bounds().Max.X, halfHeight+halfWidth)
-            return m
-        }
-        m.clip(halfWidth-halfHeight,0, halfHeight+halfWidth, m.opImage.Bounds().Max.Y)
+    if m.opImage == nil {
+        m.opImage = m.image
+    }
+    halfWidth := int(m.opImage.Bounds().Dx()/2)
+    halfHeight := int(m.opImage.Bounds().Dy()/2)
+    if m.opImage.Bounds().Dy()> m.opImage.Bounds().Dx(){
+        m.clip(0,halfHeight-halfWidth, m.opImage.Bounds().Dx(), halfHeight+halfWidth)
         return m
     }
-    halfWidth := int(m.image.Bounds().Max.X/2)
-    halfHeight := int(m.image.Bounds().Max.Y/2)
-    if m.image.Bounds().Max.Y > m.image.Bounds().Max.X{
-        m.clip(0,halfHeight-halfWidth, m.image.Bounds().Max.X, halfHeight+halfWidth)
-        return m
-    }
-    m.clip(halfWidth-halfHeight,0, halfHeight+halfWidth, m.image.Bounds().Max.Y)
+    m.clip(halfWidth-halfHeight,0, halfHeight+halfWidth, m.opImage.Bounds().Dy())
     return m
 }
 
@@ -73,15 +68,11 @@ func (m *Image) CustomClip(x0,y0,x1,y1 uint) *Image {
         m.err = ERRCUSTOMCLIP
         return m
     }
-    if m.opImage != nil {
-        if x1 > uint(m.opImage.Bounds().Max.X) ||
-            y1 > uint(m.opImage.Bounds().Max.Y) {
-            m.err = ERRCUSTOMCLIPPARA
-            return m
-        }
+    if m.opImage == nil {
+        m.opImage = m.image
     }
-    if x1 > uint(m.image.Bounds().Max.X) ||
-        y1 > uint(m.image.Bounds().Max.Y) {
+    if x1 > uint(m.opImage.Bounds().Dx()) ||
+        y1 > uint(m.opImage.Bounds().Dy()) {
         m.err = ERRCUSTOMCLIPPARA
         return m
     }
